@@ -26,7 +26,7 @@ int main() {
     char input;
 
     // This is a test input to begin analysis
-    std::cout << "Welcome to the third party privlege analysis\n";
+    std::cout << "Welcome to the third party privilege analysis\n";
     std::cout << "Please ensure that the file names match the following:\n";
     std::cout << "\nPriv log: 'priv_log.csv'\n";
     std::cout << "Third party list: 'tp_list.csv'\n";
@@ -64,11 +64,11 @@ int main() {
 
     // Remove double quotes from the line
     tp_name.erase(std::remove(tp_name.begin(), tp_name.end(), '\"'), tp_name.end());
-        
-    tp_list.push_back(tp_name);
+
+    // change names to lower case    
+    tp_list.push_back(to_lower(tp_name));
 
     }
-    
     tp_file.close();
 
    /*////////////////////////////////////////////////////////////////////
@@ -96,20 +96,20 @@ int main() {
         std::cin >> input;
         return 1;
     }
-
     // read each line of priv_log and check for names
     while (std::getline(priv_file, line)) {
 
-        std::string names_in_line = ""; // default value that any name matches concat to
+        // change to lower case
+        line = to_lower(line);
+
+        std::string names_in_line = ""; // default value that any name matches append to
         
         // loop through the tp_list for each priv_log line 
         for (int i = 0; i < tp_list.size(); i++) {
 
             // this concatenates all tp matched for a given line in the priv_log
-            names_in_line += name_match(line, tp_list[i]) += ""; // Think about how to separate multiple matches
-
+            names_in_line += name_match(line, tp_list[i]);
         }
-        
         tp_present.push_back(names_in_line);
 
         // this is to output each set of names that match per priv line for testing
@@ -119,7 +119,6 @@ int main() {
         // writes each set of matching tp names and adds quotes so excel keeps in one column
         out_file << '\"' << names_in_line << '\"' << std::endl;
     }
-    
     // close both files
     priv_file.close();
     out_file.close();
